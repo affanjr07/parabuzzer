@@ -15,9 +15,10 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://parabuzzer-ten.vercel.app/"
+      "https://parabuzzer-ten.vercel.app", // ❗ TANPA /
     ],
-    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
