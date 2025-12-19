@@ -126,10 +126,10 @@ export default function Home() {
         <section className="mt-16">
           <div className="px-4 flex justify-between items-end mb-8">
             <div>
-              <h2 className="font-black text-2xl text-slate-800 tracking-tight">
+              <h2 className="font-black text-2xl text-slate-800">
                 Rekomendasi <span className="text-purple-600">Influencer</span>
               </h2>
-              <p className="text-slate-400 text-sm font-medium mt-1 uppercase tracking-tighter italic">Pilihan terbaik untuk campaign Anda</p>
+              <p className="text-slate-400 text-sm font-medium mt-1 uppercase">Pilihan terbaik untuk campaign Anda</p>
             </div>
             <Link
               to="/influencer"

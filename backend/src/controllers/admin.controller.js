@@ -129,7 +129,24 @@ export const getAdminBookings = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("bookings")
-      .select("*")
+      .select(`
+        id,
+        campaign_name,
+        note,
+        status,
+        created_at,
+
+        profiles (
+          id,
+          name,
+          role
+        ),
+
+        influencers (
+          id,
+          username
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -143,6 +160,8 @@ export const getAdminBookings = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+
 
 
 

@@ -1,109 +1,114 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { 
-  FiUsers, 
-  FiDollarSign, 
-  FiTrendingUp, 
-  FiSettings, 
-  FiArrowRight, 
-  FiPlusCircle,
-  FiActivity
-} from "react-icons/fi";
+import { FiUsers, FiClipboard, FiArrowRight } from "react-icons/fi";
+import { api } from "../../services/api";
 
 export default function AdminDashboard() {
-  
-  // Data Statik untuk Ringkasan Statistik
-  const stats = [
-    { label: "Total Influencer", value: "128", icon: <FiUsers />, color: "bg-blue-50 text-blue-600" },
-    { label: "Pendapatan Bulan Ini", value: "Rp 12.5M", icon: <FiDollarSign />, color: "bg-green-50 text-green-600" },
-    { label: "Transaksi Aktif", value: "43", icon: <FiActivity />, color: "bg-purple-50 text-purple-600" },
-    { label: "Growth", value: "+12%", icon: <FiTrendingUp />, color: "bg-orange-50 text-orange-600" },
-  ];
+  const [totalInfluencer, setTotalInfluencer] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const [infRes, orderRes] = await Promise.all([
+        api.get("/influencers"),
+        api.get("/admin/bookings"),
+      ]);
+
+      setTotalInfluencer(infRes.data?.length || 0);
+      setTotalOrders(orderRes.data?.length || 0);
+    } catch (err) {
+      console.error("Dashboard fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FBFCFE] p-6 pb-24">
-      <div className="max-w-7xl mx-auto">
-        
+      <div className="max-w-6xl mx-auto">
+
         {/* HEADER */}
         <div className="mb-10">
           <h1 className="text-3xl text-slate-800 tracking-tight">
-            Admin <span className="text-purple-600">Console</span>
+            Admin <span className="text-purple-600">Dashboard</span>
           </h1>
-          <p className="text-slate-400 text-sm mt-1 uppercase tracking-[0.1em]">
-            Kelola ekosistem influencer dan pantau transaksi
+          <p className="text-slate-400 text-sm mt-1 uppercase tracking-wider">
+            Ringkasan data sistem
           </p>
         </div>
 
-        {/* STATS GRID */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          {stats.map((item, idx) => (
-            <div key={idx} className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-              <div className={`w-10 h-10 ${item.color} rounded-xl flex items-center justify-center text-xl mb-4`}>
-                {item.icon}
-              </div>
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-1">{item.label}</p>
-              <p className="text-xl text-slate-800">{item.value}</p>
+        {/* STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          
+          {/* TOTAL INFLUENCER */}
+          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+              <FiUsers />
             </div>
-          ))}
+            <p className="text-xs uppercase tracking-widest text-slate-400 mb-1">
+              Total Influencer
+            </p>
+            <p className="text-3xl text-slate-800 font-bold">
+              {loading ? "…" : totalInfluencer}
+            </p>
+          </div>
+
+          {/* TOTAL ORDER */}
+          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+              <FiClipboard />
+            </div>
+            <p className="text-xs uppercase tracking-widest text-slate-400 mb-1">
+              Total Order
+            </p>
+            <p className="text-3xl text-slate-800 font-bold">
+              {loading ? "…" : totalOrders}
+            </p>
+          </div>
+
         </div>
 
-        {/* MAIN ACTIONS */}
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* ACTIONS */}
+        <div className="grid md:grid-cols-2 gap-6">
 
-          {/* KELOLA INFLUENCER CARD */}
-          <div className="group bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm hover:border-purple-200 transition-all">
-            <div className="flex justify-between items-start mb-6">
-              <div className="w-14 h-14 bg-purple-100 text-purple-600 rounded-[1.5rem] flex items-center justify-center text-2xl">
-                <FiUsers />
-              </div>
-              <Link to="/admin/influencer/add" className="text-purple-600 hover:bg-purple-50 p-2 rounded-full transition-colors">
-                <FiPlusCircle size={24} />
-              </Link>
-            </div>
-            
-            <h2 className="text-xl text-slate-800 mb-2">Manajemen Influencer</h2>
-            <p className="text-sm text-slate-400 leading-relaxed mb-8">
-              Verifikasi pendaftar baru, perbarui profil talent, atau hapus influencer yang sudah tidak aktif dari direktori.
+          {/* MANAGE INFLUENCER */}
+          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <h2 className="text-xl text-slate-800 mb-2">
+              Manajemen Influencer
+            </h2>
+            <p className="text-sm text-slate-400 mb-6">
+              Kelola data influencer yang terdaftar di platform.
             </p>
-            
             <Link
               to="/admin/influencer"
-              className="flex items-center justify-center gap-2 bg-slate-900 text-white w-full py-4 rounded-2xl hover:bg-purple-600 transition-all group-hover:shadow-lg group-hover:shadow-purple-200"
+              className="flex items-center justify-center gap-2 bg-purple-600 text-white w-full py-4 rounded-2xl hover:bg-purple-700 transition"
             >
               Buka Direktori <FiArrowRight />
             </Link>
           </div>
 
-          {/* TRANSAKSI CARD */}
-          <div className="group bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm hover:border-blue-200 transition-all">
-            <div className="flex justify-between items-start mb-6">
-              <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-[1.5rem] flex items-center justify-center text-2xl">
-                <FiDollarSign />
-              </div>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mt-2 mr-2"></div>
-            </div>
-            
-            <h2 className="text-xl text-slate-800 mb-2">Riwayat Transaksi</h2>
-            <p className="text-sm text-slate-400 leading-relaxed mb-8">
-              Pantau arus kas masuk, konfirmasi pembayaran dari brand, dan pastikan pencairan dana influencer berjalan lancar.
+          {/* TRANSAKSI */}
+          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+            <h2 className="text-xl text-slate-800 mb-2">
+              Riwayat Order
+            </h2>
+            <p className="text-sm text-slate-400 mb-6">
+              Pantau semua booking yang masuk ke sistem.
             </p>
-            
             <Link
               to="/admin/transactions"
-              className="flex items-center justify-center gap-2 bg-slate-900 text-white w-full py-4 rounded-2xl hover:bg-blue-600 transition-all group-hover:shadow-lg group-hover:shadow-blue-200"
+              className="flex items-center justify-center gap-2 bg-blue-600 text-white w-full py-4 rounded-2xl hover:bg-blue-700 transition"
             >
               Lihat Transaksi <FiArrowRight />
             </Link>
           </div>
 
         </div>
-
-        {/* FOOTER ACTION (OPTIONAL) */}
-        <div className="mt-10 flex justify-center">
-          <button className="flex items-center gap-2 text-slate-400 hover:text-slate-600 text-sm transition-colors">
-            <FiSettings /> Dashboard Settings
-          </button>
-        </div>
-
       </div>
     </div>
   );

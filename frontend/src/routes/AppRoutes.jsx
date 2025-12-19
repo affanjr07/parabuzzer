@@ -9,6 +9,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Recommended from "../pages/Recommended";
 import About from "../pages/About";
+import PaymentSuccess from "../pages/PaymentSuccess";
 
 // ================= USER =================
 import UserProfile from "../pages/UserProfile";
@@ -40,6 +41,7 @@ export default function AppRoutes() {
       <Route path="/about" element={<About />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
 
       {/* ================= USER ================= */}
       <Route
