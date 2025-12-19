@@ -11,7 +11,16 @@ import chatRoutes from "./routes/chat.routes.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://parabuzzer-ten.vercel.app/"
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
@@ -21,6 +30,5 @@ app.use("/api/influencers", influencerRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/chats", chatRoutes);
-
 
 export default app;
